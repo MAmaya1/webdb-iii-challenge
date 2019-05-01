@@ -73,4 +73,26 @@ router.post('/', (req, res) => {
     }
 })
 
+// PUT (update cohort)
+
+router.put('/:id', (req, res) => {
+    if (!req.body.name) {
+        res.status(400).json({ errorMessage: 'Cohorts require a valid name.' })
+    } else {
+        db('cohorts')
+            .where({ id: req.params.id })
+            .update(req.body)
+            .then(count => {
+                if (count > 0) {
+                    res.status(201).json({ message: `${count} ${count > 1 ? 'cohorts' : 'cohort' } updated.` })
+                } else {
+                    res.status(404).json({ errorMessage: 'A cohort with the specified ID does not exist.' })
+                }
+            })
+            .catch(err => {
+                res.status(500).json({ error: err, message: 'Cohort data could not be updated.' })
+            })
+    }
+})
+
 module.exports = router;
