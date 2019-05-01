@@ -48,4 +48,29 @@ router.get('/:id', (req, res) => {
         })
 })
 
+// POST (add new cohort)
+
+router.post('/', (req, res) => {
+    if(!req.body.name) {
+        res.status(400).json({ errorMessage: 'New cohorts require a valid name.' })
+    } else {
+        db('cohorts')
+            .insert(req.body, 'id')
+            .then(ids => {
+                db('cohorts')
+                .where({ id: ids[0] })
+                .first()
+                .then(cohort => {
+                    res.status(201).json(cohort)
+                })
+                .catch(err => {
+                    res.status(500).json({ error: err, message: 'New cohort could not be added to the database.' })
+                })
+            })
+            .catch(err => {
+                res.status(400).json({ error: err, message: 'A cohort with this name already exists.' })
+            })
+    }
+})
+
 module.exports = router;
