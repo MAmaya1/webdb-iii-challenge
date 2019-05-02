@@ -48,6 +48,23 @@ router.get('/:id', (req, res) => {
         })
 })
 
+// GET cohort students
+
+router.get('/:id/students', (req, res) => {
+    db('students')
+        .where({ id: req.params.id })
+        .then(student => {
+            if (student) {
+                res.status(201).json(student)
+            } else {
+                res.status(404).json({ errorMessage: 'A student with the specified cohort ID does not exist.' })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ error: err, message: 'Could not retireve student data.' })
+        })
+})
+
 // POST (add new cohort)
 
 router.post('/', (req, res) => {
