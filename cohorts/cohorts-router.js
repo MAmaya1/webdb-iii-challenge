@@ -51,8 +51,9 @@ router.get('/:id', (req, res) => {
 // GET cohort students
 
 router.get('/:id/students', (req, res) => {
+    console.log(req.params.id)
     db('students')
-        .where({ id: req.params.id })
+        .where({ cohort_id: req.params.id })
         .then(student => {
             if (student) {
                 res.status(201).json(student)
