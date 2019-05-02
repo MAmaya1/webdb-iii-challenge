@@ -58,14 +58,14 @@ router.post('/', (req, res) => {
             .insert(req.body, 'id')
             .then(ids => {
                 db('cohorts')
-                .where({ id: ids[0] })
-                .first()
-                .then(cohort => {
-                    res.status(201).json(cohort)
-                })
-                .catch(err => {
-                    res.status(500).json({ error: err, message: 'New cohort could not be added to the database.' })
-                })
+                    .where({ id: ids[0] })
+                    .first()
+                    .then(cohort => {
+                        res.status(201).json(cohort)
+                    })
+                    .catch(err => {
+                        res.status(500).json({ error: err, message: 'New cohort could not be added to the database.' })
+                    })
             })
             .catch(err => {
                 res.status(400).json({ error: err, message: 'A cohort with this name already exists.' })
@@ -84,7 +84,7 @@ router.put('/:id', (req, res) => {
             .update(req.body)
             .then(count => {
                 if (count > 0) {
-                    res.status(201).json({ message: `${count} ${count > 1 ? 'cohorts' : 'cohort' } updated.` })
+                    res.status(201).json({ message: `${count} ${count > 1 ? 'cohorts' : 'cohort'} updated.` })
                 } else {
                     res.status(404).json({ errorMessage: 'A cohort with the specified ID does not exist.' })
                 }
@@ -93,6 +93,24 @@ router.put('/:id', (req, res) => {
                 res.status(500).json({ error: err, message: 'Cohort data could not be updated.' })
             })
     }
+})
+
+// DELETE cohort
+
+router.delete('/:id', (req, res) => {
+    db('cohorts')
+        .where({ id: req.params.id })
+        .del(req.body)
+        .then(count => {
+            if (count) {
+                res.status(200).json({ message: `${count} ${count > 1 ? 'cohorts' : 'cohort'} deleted.` })
+            } else {
+                res.status(404).json({ errorMessage: 'A cohort with the specified ID does not exist.' })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ error: err, message: 'Cohort data could not be deleted.' })
+        })
 })
 
 module.exports = router;
